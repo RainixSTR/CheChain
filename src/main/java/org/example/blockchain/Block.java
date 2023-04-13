@@ -1,26 +1,41 @@
 package org.example.blockchain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 
-public class Block {
+public class Block implements Serializable {
 
-    private static final MessageDigest md;
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     static {
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        OBJECT_MAPPER.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
     }
 
-    private final int index;
-    private final String prevHash;
-    private final String data;
+    @JsonProperty("index")
+    private int index;
+
+    @JsonProperty("previousHash")
+    private String prevHash;
+
+    @JsonProperty("data")
+    private String data;
+    @JsonProperty("nonce")
     private int nonce;
-    private final String hash;
+    @JsonProperty("hash")
+    private String hash;
+
+    public Block() {
+    }
 
     public Block(int index, String prevHash, String data) {
         this.index = index;
@@ -58,20 +73,54 @@ public class Block {
         return nonce;
     }
 
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public void setPrevHash(String prevHash) {
+        this.prevHash = prevHash;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public void setNonce(int nonce) {
+        this.nonce = nonce;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
     private String calculateHash() {
-        HexFormat hex = HexFormat.of();
-        byte[] hashBytes;
         String calculatedHash;
         do {
             String input = index + prevHash + data + nonce;
-            hashBytes = md.digest(input.getBytes());
-            calculatedHash = hex.formatHex(hashBytes);
+            calculatedHash = DigestUtils.sha256Hex(input);
             nonce++;
         } while (!isValid(calculatedHash));
         return calculatedHash;
     }
 
+    public static Block fromJson(InputStream stream) {
+        try {
+            return OBJECT_MAPPER.readValue(stream, Block.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String toJson() {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static boolean isValid(String curHash) {
         return curHash.endsWith("0000");
     }
+
 }

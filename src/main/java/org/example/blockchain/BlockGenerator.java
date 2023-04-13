@@ -17,16 +17,15 @@ public class BlockGenerator {
     public void startGenerating() {
         executor.execute(() -> {
             while (true) {
-                Block previousBlock = blockchain.getLatestBlock();
-                int nextIndex = previousBlock.getIndex() + 1;
-                String previousHash = previousBlock.getHash();
-                String data = generateData();
-                Block newBlock = new Block(nextIndex, previousHash, data);
-                blockchain.addBlock(newBlock);
-                System.out.println("Block added: " + newBlock.getHash());
                 try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
+                    Block previousBlock = blockchain.getLatestBlock();
+                    int nextIndex = previousBlock == null ? 0 : previousBlock.getIndex() + 1;
+                    String previousHash = previousBlock == null ? "stub" : previousBlock.getHash();
+                    String data = generateData();
+                    Block newBlock = new Block(nextIndex, previousHash, data);
+                    blockchain.addBlock(newBlock, true);
+                    Thread.sleep(3000);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
