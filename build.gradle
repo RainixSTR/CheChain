@@ -1,5 +1,15 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'com.github.johnrengelman:shadow:8.1.1'
+    }
+}
+
 plugins {
     id("java")
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = "org.example"
@@ -22,4 +32,16 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+shadowJar {
+    archiveFileName = "CheBlockChain.jar"
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes "Main-Class": "org.example.Main"
+    }
 }
