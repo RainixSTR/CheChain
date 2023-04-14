@@ -9,9 +9,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.HexFormat;
 
 public class Block implements Serializable {
 
@@ -93,7 +90,7 @@ public class Block implements Serializable {
         this.hash = hash;
     }
 
-    private String calculateHash() {
+    protected String calculateHash() {
         String calculatedHash;
         do {
             String input = index + prevHash + data + nonce;
