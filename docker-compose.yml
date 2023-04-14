@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  first-node:
+    image: blockchain
+    container_name: chechain_1
+    command: java -jar /app/CheBlockChain.jar -name node_1
+    ports:
+      - "8081:8081"
+  second-node:
+    image: blockchain
+    container_name: chechain_2
+    command: java -jar /app/CheBlockChain.jar -name node_2
+    ports:
+      - "8082:8082"
+  third-node:
+    image: blockchain
+    container_name: chechain_3
+    command: java -jar /app/CheBlockChain.jar -name node_3
+    ports:
+      - "8083:8083"
