@@ -77,7 +77,6 @@ public class Blockchain {
                         addMsg = port + " | " + response.body();
                     }
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
                     System.out.println(port + " | Failed to connect to server " + serverUrl);
                 }
             }
