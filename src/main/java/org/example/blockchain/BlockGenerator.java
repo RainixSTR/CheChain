@@ -32,7 +32,7 @@ public class BlockGenerator {
         });
     }
 
-    private String generateData() {
+    protected String generateData() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 256; i++) {
             char c = (char) ((Math.random() * 26) + 'a');

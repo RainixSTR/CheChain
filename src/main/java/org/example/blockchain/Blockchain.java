@@ -37,8 +37,6 @@ public class Blockchain {
         return this.chain;
     }
 
-
-
     public Block getLatestBlock() {
         if (chain.isEmpty()) {
             return null;
@@ -46,7 +44,7 @@ public class Blockchain {
         return this.chain.get(this.chain.size() - 1);
     }
 
-    public List<Block> getChainAfter(int index) {
+    public List<Block> getChainFrom(int index) {
         if (index < 0 || index > chain.size() - 1) {
             return Collections.emptyList();
         }
@@ -55,6 +53,9 @@ public class Blockchain {
     }
 
     public boolean addBlock(Block newBlock, boolean sendToCluster) {
+        if (newBlock == null) {
+            return false;
+        }
         if (!Block.isValid(newBlock.getHash())) {
             return false;
         }
